@@ -13,8 +13,8 @@ import java.util.UUID;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/blog")
-public class BlogController {
+@RequestMapping("/post")
+public class PostController {
 
     @Autowired
     private PostService postService;
@@ -22,7 +22,7 @@ public class BlogController {
     @Autowired
     private PostRepository postRepository;
 
-    @PostMapping("/create-blog")
+    @PostMapping("/create-post")
     public ResponseEntity<?> createPost(@RequestParam("file") MultipartFile file,
                                         @RequestParam("title") String title,
                                         @RequestParam("content") String content,
