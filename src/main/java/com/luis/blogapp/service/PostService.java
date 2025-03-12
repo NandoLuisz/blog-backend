@@ -26,13 +26,11 @@ public class PostService {
         this.s3Client = s3Client;
     }
 
-
     public Post createPost(MultipartFile file, String title, String content, UUID creatorId) throws IOException {
         String imgURL = null;
 
         if(file != null){
-//            imgURL = this.uploadFile(data.imgURL());
-            imgURL = "https://img.webp";
+            imgURL = this.uploadFile(file);
         }
 
         Post newPost = new Post();
@@ -44,7 +42,7 @@ public class PostService {
         return newPost;
     }
 
-    public String uploadFile(MultipartFile file) throws IOException {
+    private String uploadFile(MultipartFile file) throws IOException {
         String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
 
         s3Client.putObject(
@@ -70,23 +68,4 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-//    private String uploadImg(MultipartFile multipartFile) {
-//        String filename = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
-//
-//        try {
-//            PutObjectRequest putOb = PutObjectRequest.builder()
-//                    .bucket(bucketName)
-//                    .key(filename)
-//                    .build();
-//            s3Client.putObject(putOb, RequestBody.fromByteBuffer(ByteBuffer.wrap(multipartFile.getBytes())));
-//            GetUrlRequest request = GetUrlRequest.builder()
-//                    .bucket(bucketName)
-//                    .key(filename)
-//                    .build();
-//            return s3Client.utilities().getUrl(request).toString();
-//        } catch (Exception e) {
-//            log.error("erro ao subir arquivo: {}", e.getMessage());
-//            return "";
-//        }
-//    }
 }

@@ -19,9 +19,7 @@ public class Creator {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = true)
     private String imageProfile;
-
 
     public Creator(String name, String email, String imageProfile) {
         this.name = name;

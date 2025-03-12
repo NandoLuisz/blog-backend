@@ -10,10 +10,13 @@ import software.amazon.awssdk.services.s3.S3Client;
 @Configuration
 public class AwsConfig {
 
+    @Value("${aws.s3.region}")
+    private String awsRegion;
+
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
-                .region(Region.of("AWS_REGION"))
+                .region(Region.of(awsRegion))
                 .credentialsProvider(DefaultCredentialsProvider.create())
                 .build();
     }
