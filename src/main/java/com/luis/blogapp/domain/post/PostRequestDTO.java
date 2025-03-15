@@ -1,13 +1,13 @@
 package com.luis.blogapp.domain.post;
 
+import com.luis.blogapp.domain.creator.Creator;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
 
 public record PostRequestDTO(
         String title,
         String content,
         MultipartFile file,
-        UUID creatorId
+        Creator creator
     ) {
 }

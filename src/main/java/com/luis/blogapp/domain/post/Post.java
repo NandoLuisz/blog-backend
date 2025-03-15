@@ -1,6 +1,7 @@
 package com.luis.blogapp.domain.post;
 
 
+import com.luis.blogapp.domain.creator.Creator;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -18,19 +19,30 @@ public class Post {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     private String imageURL;
 
-    @Column(nullable = true)
-    private UUID creatorId;
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private Creator creator;
 
-    public Post(String title, String content, String imageURL, UUID creatorId) {
+    private LocalDateTime createdAt;
+
+    private String type;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Post(String title, String content, String imageURL, Creator creator, String type) {
         this.title = title;
         this.content = content;
         this.imageURL = imageURL;
-        this.creatorId = creatorId;
+        this.creator = creator;
+        this.type = type;
     }
 
     public Post() {
@@ -69,11 +81,27 @@ public class Post {
         this.imageURL = imageURL;
     }
 
-    public UUID getCreatorId() {
-        return creatorId;
+    public Creator getCreator() {
+        return creator;
     }
 
-    public void setCreatorId(UUID creatorId) {
-        this.creatorId = creatorId;
+    public void setCreator(Creator creator) {
+        this.creator = creator;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

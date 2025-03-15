@@ -1,7 +1,9 @@
 package com.luis.blogapp.service;
 
+import com.luis.blogapp.domain.creator.Creator;
 import com.luis.blogapp.domain.post.Post;
-import com.luis.blogapp.domain.post.PostRequestDTO;
+import com.luis.blogapp.domain.post.PostResponseDTO;
+import com.luis.blogapp.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,15 +20,17 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final S3Client s3Client;
+    private final PostRepository postRepository;
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
 
-    public PostService(S3Client s3Client) {
+    public PostService(S3Client s3Client, PostRepository postRepository) {
         this.s3Client = s3Client;
+        this.postRepository = postRepository;
     }
 
-    public Post createPost(MultipartFile file, String title, String content, UUID creatorId) throws IOException {
+    public Post createPost(MultipartFile file, String title, String content, Creator creator, String type) throws IOException {
         String imgURL = null;
 
         if(file != null){
@@ -37,7 +41,8 @@ public class PostService {
         newPost.setImageURL(imgURL);
         newPost.setTitle(title);
         newPost.setContent(content);
-        newPost.setCreatorId(creatorId);
+        newPost.setCreator(creator);
+        newPost.setType(type);
 
         return newPost;
     }
@@ -54,6 +59,16 @@ public class PostService {
         );
 
         return "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
+    }
+
+    public List<PostResponseDTO> getAll(){
+        return postRepository.findAll().stream().map(PostResponseDTO::new).toList();
+    }
+
+    public PostResponseDTO getPostById(UUID postId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post não encontrado!"));
+        return new PostResponseDTO(post);
     }
 
     public List<String> listarArquivos() {
