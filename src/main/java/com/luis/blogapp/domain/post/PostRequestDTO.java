@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 public record PostRequestDTO(
         String title,
         String content,
-        MultipartFile file,
+        MultipartFile imagePost,
         Creator creator
     ) {
 }

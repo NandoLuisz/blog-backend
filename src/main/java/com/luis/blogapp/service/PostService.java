@@ -30,15 +30,15 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public Post createPost(MultipartFile file, String title, String content, Creator creator, String type) throws IOException {
-        String imgURL = null;
+    public Post createPost(MultipartFile imagePost, String title, String content, Creator creator, String type) throws IOException {
+        String imagePostUrl = null;
 
-        if(file != null){
-            imgURL = this.uploadFile(file);
+        if(imagePost != null){
+            imagePostUrl = this.uploadFile(imagePost);
         }
 
         Post newPost = new Post();
-        newPost.setImageURL(imgURL);
+        newPost.setImagePostUrl(imagePostUrl);
         newPost.setTitle(title);
         newPost.setContent(content);
         newPost.setCreator(creator);
@@ -48,7 +48,7 @@ public class PostService {
     }
 
     private String uploadFile(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
+        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename().replaceAll("\\s", "_");
 
         s3Client.putObject(
                 PutObjectRequest.builder()

@@ -11,8 +11,9 @@ import java.util.UUID;
 
 @Repository
 public interface CreatorRepository extends JpaRepository<Creator, UUID> {
-    Creator findCreatorByName(String name);
-    Creator findCreatorByEmail(String email);
-
     UserDetails findByUsername(String username);
+
+    Creator getCreatorByUsername(String username);
+
+    boolean existsByEmail(String email);
 }

@@ -2,34 +2,50 @@ package com.luis.blogapp.domain.creator;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "creator")
 @Table(name = "creator")
-public class Creator {
+public class Creator implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)
-    private String name;
+    private String username;
 
     @Column(nullable = false)
     private String email;
 
-    private String imageProfile;
+    @Column(nullable = false)
+    private String password;
 
-    public Creator(String name, String email, String imageProfile) {
-        this.name = name;
+    @Column(nullable = false)
+    private String imageProfileUrl;
+
+    @Column(nullable = false)
+    private CreatorRole role;
+
+    public Creator(String username, String email, String imageProfileUrl, String password, CreatorRole role) {
+        this.username = username;
         this.email = email;
-        this.imageProfile = imageProfile;
+        this.imageProfileUrl = imageProfileUrl;
+        this.password = password;
+        this.role = role;
     }
 
     public Creator() {
 
     }
+
 
     public UUID getId() {
         return id;
@@ -39,12 +55,8 @@ public class Creator {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -55,12 +67,58 @@ public class Creator {
         this.email = email;
     }
 
-    public String getImageProfile() {
-        return imageProfile;
+    public String getImageProfileUrl() {
+        return imageProfileUrl;
     }
 
-    public void setImageProfile(String imageProfile) {
-        this.imageProfile = imageProfile;
+    public void setImageProfileUrl(String imageProfileUrl) {
+        this.imageProfileUrl = imageProfileUrl;
     }
 
+    public CreatorRole getRole() {
+        return role;
+    }
+
+    public void setRole(CreatorRole role) {
+        this.role = role;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if(this.role == CreatorRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

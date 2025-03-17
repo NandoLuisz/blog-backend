@@ -1,13 +1,11 @@
 package com.luis.blogapp.controller;
 
 import com.luis.blogapp.domain.creator.Creator;
-import com.luis.blogapp.domain.creator.CreatorResponseDTO;
 import com.luis.blogapp.domain.post.Post;
 import com.luis.blogapp.domain.post.PostResponseDTO;
 import com.luis.blogapp.repository.CreatorRepository;
 import com.luis.blogapp.repository.PostRepository;
 import com.luis.blogapp.service.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/post")
 public class PostController {
@@ -33,13 +30,13 @@ public class PostController {
     }
 
     @PostMapping("/create-post")
-    public ResponseEntity<?> createPost(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<?> createPost(@RequestParam("imagePost") MultipartFile imagePost,
                                         @RequestParam("title") String title,
                                         @RequestParam("content") String content,
                                         @RequestParam("creatorId") UUID creatorId,
                                         @RequestParam("type") String type) {
 
-        if (file.isEmpty()) {
+        if (imagePost.isEmpty()) {
             return ResponseEntity.badRequest().body("O arquivo não pode estar vazio!");
         }
 
@@ -50,7 +47,7 @@ public class PostController {
         Creator creator = creatorRequest.get();
 
         try {
-            Post newPost = postService.createPost(file, title, content, creator, type);
+            Post newPost = postService.createPost(imagePost, title, content, creator, type);
             return ResponseEntity.ok(this.postRepository.save(newPost));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Erro ao fazer upload: " + e.getMessage());

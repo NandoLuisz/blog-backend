@@ -14,7 +14,6 @@ import java.time.ZoneOffset;
 
 @Service
 public class TokenService {
-
     @Value("${api.security.token.secret}")
     private String secret;
 
@@ -22,8 +21,8 @@ public class TokenService {
         try{
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
-                    .withIssuer("spring-secutiry-jwt")
-                    .withSubject(creator.getName())
+                    .withIssuer("blog-app")
+                    .withSubject(creator.getUsername())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException exception){

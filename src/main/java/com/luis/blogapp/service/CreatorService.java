@@ -2,6 +2,7 @@ package com.luis.blogapp.service;
 
 import com.luis.blogapp.domain.creator.Creator;
 import com.luis.blogapp.domain.creator.CreatorResponseDTO;
+import com.luis.blogapp.domain.creator.CreatorRole;
 import com.luis.blogapp.repository.CreatorRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,19 +29,18 @@ public class CreatorService {
         this.creatorRepository = creatorRepository;
     }
 
-    public Creator createCreator(String name, String email, MultipartFile imageProfile) {
-        String imgUrl = null;
-
-        if (imageProfile != null) {
-            try {
-                imgUrl = this.uploadFile(imageProfile);
-            } catch (IOException e) {
-                throw new RuntimeException("Erro ao fazer upload da imagem do perfil.", e);
-            }
-        }
-
-        return new Creator(name, email, imgUrl);
-    }
+//    public Creator createCreator(String username, String email, MultipartFile imageProfile, String password, CreatorRole role) {
+//        String iamgeProfileUrl = null;
+//        if (imageProfile != null) {
+//            try {
+//                iamgeProfileUrl = this.uploadFile(imageProfile);
+//            } catch (IOException e) {
+//                throw new RuntimeException("Erro ao fazer upload da imagem do perfil.", e);
+//            }
+//        }
+//
+//        return new Creator(username, email, iamgeProfileUrl, password, role);
+//    }
 
     public List<CreatorResponseDTO> getAll(){
         return creatorRepository.findAll().stream().map(CreatorResponseDTO::new).toList();
@@ -52,8 +52,8 @@ public class CreatorService {
         return new CreatorResponseDTO(creator);
     }
 
-    private String uploadFile(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
+    public String uploadFile(MultipartFile file) throws IOException {
+        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename().replaceAll("\\s", "_");
 
         try {
             s3Client.putObject(

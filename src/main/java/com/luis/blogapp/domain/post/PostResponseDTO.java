@@ -9,7 +9,7 @@ public record PostResponseDTO(
         UUID id,
         String title,
         String content,
-        String imageURL,
+        String imagePostUrl,
         Creator creator,
         LocalDateTime createdAt,
         String type) {
@@ -18,7 +18,7 @@ public record PostResponseDTO(
             post.getId(),
             post.getTitle(),
             post.getContent(),
-            post.getImageURL(),
+            post.getImagePostUrl(),
             post.getCreator(),
             post.getCreatedAt(),
             post.getType()

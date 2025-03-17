@@ -22,14 +22,17 @@ public class Post {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    private String imageURL;
+    @Column(nullable = false)
+    private String imagePostUrl;
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private Creator creator;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
     private String type;
 
     @PrePersist
@@ -37,10 +40,10 @@ public class Post {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Post(String title, String content, String imageURL, Creator creator, String type) {
+    public Post(String title, String content, String imagePostUrl, Creator creator, String type) {
         this.title = title;
         this.content = content;
-        this.imageURL = imageURL;
+        this.imagePostUrl = imagePostUrl;
         this.creator = creator;
         this.type = type;
     }
@@ -73,12 +76,12 @@ public class Post {
         this.content = content;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public String getImagePostUrl() {
+        return imagePostUrl;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setImagePostUrl(String imagePostUrl) {
+        this.imagePostUrl = imagePostUrl;
     }
 
     public Creator getCreator() {
