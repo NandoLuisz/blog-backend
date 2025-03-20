@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +18,6 @@ public class CreatorController {
 
     @Autowired
     private CreatorService creatorService;
-
 
     @GetMapping("/all-creators")
     public ResponseEntity<List<CreatorResponseDTO>> allCreators(){
@@ -28,5 +29,10 @@ public class CreatorController {
     public ResponseEntity<CreatorResponseDTO> getCreatorById(@PathVariable(value = "creatorId") UUID creatorId){
         CreatorResponseDTO creator = this.creatorService.getCreatorById(creatorId);
         return ResponseEntity.status(HttpStatus.OK).body(creator);
+    }
+
+    @PostMapping("/updateFileDefaultCreator")
+    public String updateFileDefaultCreator(@RequestParam("file") MultipartFile file) throws IOException {
+        return this.creatorService.uploadFileCreator(file);
     }
 }

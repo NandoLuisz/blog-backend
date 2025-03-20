@@ -55,21 +55,55 @@ public class PostController {
     }
 
     @GetMapping("/all-posts")
-    public ResponseEntity<List<PostResponseDTO>> allPost(){
+    public ResponseEntity<List<PostResponseDTO>> allPost() {
         List<PostResponseDTO> listPosts = this.postService.getAll();
-        return ResponseEntity.status(HttpStatus.OK).body(listPosts);
+
+        if (listPosts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
+        return ResponseEntity.ok(listPosts);
+    }
+
+    @GetMapping("/all-posts-by-creator/{createdId}")
+    public ResponseEntity<List<PostResponseDTO>> allPostByCreator(@PathVariable UUID createdId) {
+        List<PostResponseDTO> listPosts = this.postService.allPostByCreator(createdId);
+
+        if (listPosts == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
+        return ResponseEntity.ok(listPosts);
     }
 
     @GetMapping("/all-post/{id}")
-    public ResponseEntity<PostResponseDTO> getPostById(@PathVariable(value = "id") UUID id){
+    public ResponseEntity<?> getPostById(@PathVariable(value = "id") UUID id){
         PostResponseDTO post = this.postService.getPostById(id);
+        if(post == null){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
     @GetMapping("/last-post")
-    public ResponseEntity<PostResponseDTO> getLastPost(){
+    public ResponseEntity<?> getLastPost() {
         Post lastPost = this.postRepository.findFirstByOrderByCreatedAtDesc();
-        return ResponseEntity.status(HttpStatus.OK).body(new PostResponseDTO(lastPost));
+
+        if (lastPost == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
+        return ResponseEntity.ok(new PostResponseDTO(lastPost));
+    }
+
+    @DeleteMapping("/delete-post/{id}")
+    public ResponseEntity<Object> deletePost(@PathVariable(value = "id") UUID id) {
+        Optional<Post> post = this.postRepository.findById(id);
+        if(!post.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post não encontrado!");
+        }
+        postRepository.delete(post.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Post deletado com sucesso!");
     }
 
     @GetMapping("/arquivos")

@@ -2,6 +2,7 @@ package com.luis.blogapp.controller;
 
 import com.luis.blogapp.domain.authentication.LoginDto;
 import com.luis.blogapp.domain.authentication.LoginResponseDto;
+import com.luis.blogapp.domain.authentication.RegisterRequestDto;
 import com.luis.blogapp.domain.creator.Creator;
 import com.luis.blogapp.domain.creator.CreatorRole;
 import com.luis.blogapp.infra.secutiry.TokenService;
@@ -14,7 +15,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -36,8 +36,9 @@ public class AuthenticationController {
     @PostMapping("/login-creator")
     public ResponseEntity<?> loginUser(@RequestBody LoginDto data){
         var creator = this.creatorRepository.findByUsername(data.username());
-        if(creator == null)
+        if(creator == null) {
             return ResponseEntity.badRequest().body("Usuário não cadastrado.");
+        }
 
         Creator creatorExists = this.creatorRepository.getCreatorByUsername(creator.getUsername());
         UUID id = creatorExists.getId();
@@ -53,35 +54,32 @@ public class AuthenticationController {
         }
     }
 
+
     @PostMapping("/register-creator")
-    public ResponseEntity<?> registerUser(@RequestParam("username") String username,
-                                          @RequestParam("email") String email,
-                                          @RequestParam("imageProfile") MultipartFile imageProfile,
-                                          @RequestParam("password") String password,
-                                          @RequestParam("role") String role) throws IOException {
-        if (this.creatorRepository.findByUsername(username) != null) {
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequestDto data) throws IOException {
+        if (this.creatorRepository.findByUsername(data.username()) != null) {
             return ResponseEntity.badRequest().body("Usuário já cadastrado.");
         }
 
-        if (this.creatorRepository.existsByEmail(email)) {
+        if (this.creatorRepository.existsByEmail(data.email())) {
             return ResponseEntity.badRequest().body("Email já cadastrado.");
         }
 
         CreatorRole creatorRole;
         try {
-            creatorRole = CreatorRole.valueOf(role.toUpperCase());
+            creatorRole = CreatorRole.valueOf(data.role().toUpperCase());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Role inválida.");
         }
 
-        String imageProfileUrl = this.creatorService.uploadFile(imageProfile);
+        String imageProfileUrl = this.creatorService.defaultProfileFileCreator();
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encryptedPassword = passwordEncoder.encode(password);
+        String encryptedPassword = passwordEncoder.encode(data.password());
 
         Creator newCreator = new Creator(
-                username,
-                email,
+                data.username(),
+                data.email(),
                 imageProfileUrl,
                 encryptedPassword,
                 creatorRole);

@@ -7,8 +7,10 @@ import com.luis.blogapp.repository.CreatorRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,19 +31,6 @@ public class CreatorService {
         this.creatorRepository = creatorRepository;
     }
 
-//    public Creator createCreator(String username, String email, MultipartFile imageProfile, String password, CreatorRole role) {
-//        String iamgeProfileUrl = null;
-//        if (imageProfile != null) {
-//            try {
-//                iamgeProfileUrl = this.uploadFile(imageProfile);
-//            } catch (IOException e) {
-//                throw new RuntimeException("Erro ao fazer upload da imagem do perfil.", e);
-//            }
-//        }
-//
-//        return new Creator(username, email, iamgeProfileUrl, password, role);
-//    }
-
     public List<CreatorResponseDTO> getAll(){
         return creatorRepository.findAll().stream().map(CreatorResponseDTO::new).toList();
     }
@@ -52,22 +41,57 @@ public class CreatorService {
         return new CreatorResponseDTO(creator);
     }
 
-    public String uploadFile(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename().replaceAll("\\s", "_");
+//    public String uploadFileCreator(MultipartFile file) throws IOException {
+//        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename().replaceAll("\\s", "_");
+//
+//        try {
+//            s3Client.putObject(
+//                    PutObjectRequest.builder()
+//                            .bucket(bucketName)
+//                            .key(fileName)
+//                            .build(),
+//                    software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes())
+//            );
+//        } catch (Exception e) {
+//            throw new IOException("Falha no upload do arquivo para o S3", e);
+//        }
+//
+//        System.out.println("Deu certo o envio da imagem!");
+//        return String.format("https://%s.s3.amazonaws.com/%s", bucketName, fileName);
+//    }
+
+    public String uploadFileCreator(MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            throw new IOException("Arquivo vazio.");
+        }
+        if (file.getSize() > 10 * 1024 * 1024) {
+            throw new IOException("Arquivo muito grande. O tamanho máximo permitido é 10 MB.");
+        }
+        if (!file.getContentType().startsWith("image/")) {
+            throw new IOException("Apenas arquivos de imagem são permitidos.");
+        }
+
+        String prefix = "creators/";
+
+        String fileName = prefix + UUID.randomUUID() + "-" + file.getOriginalFilename().replaceAll("\\s", "_");
 
         try {
             s3Client.putObject(
                     PutObjectRequest.builder()
                             .bucket(bucketName)
                             .key(fileName)
+                            .contentType(file.getContentType())
                             .build(),
-                    software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes())
+                    RequestBody.fromBytes(file.getBytes())
             );
-        } catch (Exception e) {
-            throw new IOException("Falha no upload do arquivo para o S3", e);
+            System.out.println("Upload realizado com sucesso: " + fileName);
+        } catch (S3Exception e) {
+            throw new IOException("Erro ao enviar arquivo para o S3: " + e.getMessage(), e);
         }
-
-        System.out.println("Deu certo o envio da imagem!");
         return String.format("https://%s.s3.amazonaws.com/%s", bucketName, fileName);
+    }
+
+    public String defaultProfileFileCreator(){
+        return "https://upload-images-app-blog.s3.amazonaws.com/creators/f84c87a3-5185-4ecc-af69-6da12220156a-defaultProfile.jpg";
     }
 }

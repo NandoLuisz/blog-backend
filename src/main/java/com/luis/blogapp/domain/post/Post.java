@@ -1,6 +1,7 @@
 package com.luis.blogapp.domain.post;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luis.blogapp.domain.creator.Creator;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
