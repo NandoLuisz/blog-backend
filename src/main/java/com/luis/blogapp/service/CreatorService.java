@@ -41,25 +41,6 @@ public class CreatorService {
         return new CreatorResponseDTO(creator);
     }
 
-//    public String uploadFileCreator(MultipartFile file) throws IOException {
-//        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename().replaceAll("\\s", "_");
-//
-//        try {
-//            s3Client.putObject(
-//                    PutObjectRequest.builder()
-//                            .bucket(bucketName)
-//                            .key(fileName)
-//                            .build(),
-//                    software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes())
-//            );
-//        } catch (Exception e) {
-//            throw new IOException("Falha no upload do arquivo para o S3", e);
-//        }
-//
-//        System.out.println("Deu certo o envio da imagem!");
-//        return String.format("https://%s.s3.amazonaws.com/%s", bucketName, fileName);
-//    }
-
     public String uploadFileCreator(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new IOException("Arquivo vazio.");
@@ -92,6 +73,6 @@ public class CreatorService {
     }
 
     public String defaultProfileFileCreator(){
-        return "https://upload-images-app-blog.s3.amazonaws.com/creators/f84c87a3-5185-4ecc-af69-6da12220156a-defaultProfile.jpg";
+        return "https://upload-images-app-blog.s3.amazonaws.com/creators/779b7d20-ddbd-4ab8-b249-94bc23e55d7d-defaultProfile.jpg";
     }
 }

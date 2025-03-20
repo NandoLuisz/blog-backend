@@ -17,8 +17,9 @@ public class AwsS3Controller {
     private AwsS3Service awsS3Service;
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteImage(@RequestParam String imageUrl){
-        String responseMessage = awsS3Service.deleteFile(imageUrl);
+    public ResponseEntity<String> deleteImage(@RequestParam String imageUrl,
+                                              @RequestParam String folder){
+        String responseMessage = awsS3Service.deleteFile(imageUrl, folder);
 
         if (responseMessage.contains("Imagem deletada com sucesso")) {
             return ResponseEntity.ok(responseMessage);

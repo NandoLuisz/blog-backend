@@ -48,20 +48,6 @@ public class PostService {
         return newPost;
     }
 
-//    private String uploadFile(MultipartFile file) throws IOException {
-//        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename().replaceAll("\\s", "_");
-//
-//        s3Client.putObject(
-//                PutObjectRequest.builder()
-//                        .bucket(bucketName)
-//                        .key(fileName)
-//                        .build(),
-//                software.amazon.awssdk.core.sync.RequestBody.fromByteBuffer(ByteBuffer.wrap(file.getBytes()))
-//        );
-//
-//        return "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
-//    }
-
     public String uploadFilePost(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new IOException("Arquivo vazio.");
@@ -71,7 +57,7 @@ public class PostService {
             throw new IOException("Apenas arquivos de imagem são permitidos.");
         }
 
-        String prefix = "post/";
+        String prefix = "posts/";
 
         String fileName = prefix + UUID.randomUUID() + "-" + file.getOriginalFilename().replaceAll("\\s", "_");
 
