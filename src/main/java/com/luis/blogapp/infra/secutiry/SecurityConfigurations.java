@@ -45,6 +45,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/creator/update-image-creator-profile").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/creator/update-image-creator-profile").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/creator/update-image-creator-profile").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/creator/data-creator-by-token/{token}").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/creator/data-creator-by-token/{token}").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/post/delete-post/{id}").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/post/last-post").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/post/all-posts").permitAll()

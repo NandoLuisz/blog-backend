@@ -6,7 +6,7 @@ public record CreatorResponseDTO(
         UUID id,
         String username,
         String email,
-        String imageProfile,
+        String imageProfileUrl,
         CreatorRole role) {
     public CreatorResponseDTO(Creator creator){
         this(creator.getId(), creator.getUsername(), creator.getEmail(), creator.getImageProfileUrl(), creator.getRole());

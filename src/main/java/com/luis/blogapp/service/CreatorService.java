@@ -5,6 +5,7 @@ import com.luis.blogapp.domain.creator.CreatorResponseDTO;
 import com.luis.blogapp.domain.creator.CreatorRole;
 import com.luis.blogapp.repository.CreatorRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -75,4 +76,13 @@ public class CreatorService {
     public String defaultProfileFileCreator(){
         return "https://upload-images-app-blog.s3.amazonaws.com/creators/779b7d20-ddbd-4ab8-b249-94bc23e55d7d-defaultProfile.jpg";
     }
+
+    public CreatorResponseDTO creatorByUsername(String usernameRequest) {
+        UserDetails userDetails = creatorRepository.findByUsername(usernameRequest);
+        String username = userDetails.getUsername();
+        Creator creator = this.creatorRepository.getCreatorByUsername(username);
+        return new CreatorResponseDTO(creator);
+    }
+
 }
+                                                                                

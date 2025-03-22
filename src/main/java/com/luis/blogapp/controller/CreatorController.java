@@ -1,5 +1,6 @@
 package com.luis.blogapp.controller;
 
+import com.luis.blogapp.JwtUtils.JwtService;
 import com.luis.blogapp.domain.creator.Creator;
 import com.luis.blogapp.domain.creator.CreatorResponseDTO;
 import com.luis.blogapp.repository.CreatorRepository;
@@ -28,6 +29,9 @@ public class CreatorController {
 
     @Autowired
     private AwsS3Service awsS3Service;
+
+    @Autowired
+    private JwtService jwtService;
 
     @GetMapping("/all-creators")
     public ResponseEntity<List<CreatorResponseDTO>> allCreators(){
@@ -72,5 +76,13 @@ public class CreatorController {
         Creator updatedCreator = this.creatorRepository.save(creator);
 
         return ResponseEntity.ok(updatedCreator);
+    }
+
+    @GetMapping("/data-creator-by-token/{token}")
+    public ResponseEntity<?> getDataCreatorByToken(@PathVariable(value = "token") String token){
+        String username = this.jwtService.extractUsername(token);
+        if(username.isEmpty()) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Creator não encontrado.");
+        CreatorResponseDTO creator = this.creatorService.creatorByUsername(username);
+        return ResponseEntity.status(HttpStatus.OK).body(creator);
     }
 }
