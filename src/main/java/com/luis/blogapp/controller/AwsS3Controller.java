@@ -1,6 +1,7 @@
 package com.luis.blogapp.controller;
 
 import com.luis.blogapp.service.AwsS3Service;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ public class AwsS3Controller {
     @Autowired
     private AwsS3Service awsS3Service;
 
+    @Operation(summary = "Deleta um arquivo do bucket S3", description = "Remove uma imagem do bucket S3")
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteImage(@RequestParam String imageUrl,
                                               @RequestParam String folder){

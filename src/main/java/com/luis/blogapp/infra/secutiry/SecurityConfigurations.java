@@ -27,13 +27,15 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
+                                "/swagger-resources/**", "/webjars/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login-creator").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register-creator").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/creator/all-creators/{creatorId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/creator/all-creators").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/creator/updateFileDefaultCreator").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/creator/update-file-default-creator").permitAll()
                         .requestMatchers(HttpMethod.POST, "/post/create-post").permitAll()
                         .requestMatchers(HttpMethod.GET, "/post/all-posts").permitAll()
                         .requestMatchers(HttpMethod.GET, "/post/all-post/{id}").permitAll()

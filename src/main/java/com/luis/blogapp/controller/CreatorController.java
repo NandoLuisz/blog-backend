@@ -6,6 +6,7 @@ import com.luis.blogapp.domain.creator.CreatorResponseDTO;
 import com.luis.blogapp.repository.CreatorRepository;
 import com.luis.blogapp.service.AwsS3Service;
 import com.luis.blogapp.service.CreatorService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,23 +34,21 @@ public class CreatorController {
     @Autowired
     private JwtService jwtService;
 
+    @Operation(summary = "Lista todos os criadores", description = "Retorna uma lista de todos os criadores")
     @GetMapping("/all-creators")
     public ResponseEntity<List<CreatorResponseDTO>> allCreators(){
         List<CreatorResponseDTO> listCreators = this.creatorService.getAll();
         return ResponseEntity.status(HttpStatus.OK).body(listCreators);
     }
 
+    @Operation(summary = "Lista um criador pelo seu id de criador", description = "Retorna um criador buscado pelo seu id de criador")
     @GetMapping("/all-creators/{creatorId}")
     public ResponseEntity<CreatorResponseDTO> getCreatorById(@PathVariable(value = "creatorId") UUID creatorId){
         CreatorResponseDTO creator = this.creatorService.getCreatorById(creatorId);
         return ResponseEntity.status(HttpStatus.OK).body(creator);
     }
 
-    @PostMapping("/updateFileDefaultCreator")
-    public String updateFileDefaultCreator(@RequestParam("file") MultipartFile file) throws IOException {
-        return this.creatorService.uploadFileCreator(file);
-    }
-
+    @Operation(summary = "Update da foto de perfil do criador", description = "Faz o upload de uma nova foto de perfil de um criador")
     @PutMapping("/update-image-creator-profile")
     public ResponseEntity<?> updateImageCreatorProfile(
             @RequestParam("imageProfile") MultipartFile imageProfile,
@@ -78,6 +77,7 @@ public class CreatorController {
         return ResponseEntity.ok(updatedCreator);
     }
 
+    @Operation(summary = "Dados de uma criador", description = "Retorna dados de um criador buscado pelo seu token")
     @GetMapping("/data-creator-by-token/{token}")
     public ResponseEntity<?> getDataCreatorByToken(@PathVariable(value = "token") String token){
         String username = this.jwtService.extractUsername(token);

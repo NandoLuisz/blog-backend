@@ -8,6 +8,7 @@ import com.luis.blogapp.domain.creator.CreatorRole;
 import com.luis.blogapp.infra.secutiry.TokenService;
 import com.luis.blogapp.repository.CreatorRepository;
 import com.luis.blogapp.service.CreatorService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ public class AuthenticationController {
     private CreatorService creatorService;
 
 
+    @Operation(summary = "Login do criador", description = "Loga o criador a aplicação")
     @PostMapping("/login-creator")
     public ResponseEntity<?> loginUser(@RequestBody LoginDto data){
         var creator = this.creatorRepository.findByUsername(data.username());
@@ -54,7 +56,7 @@ public class AuthenticationController {
         }
     }
 
-
+    @Operation(summary = "Registra um novo criador", description = "Cria uma conta para um novo criador")
     @PostMapping("/register-creator")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequestDto data) throws IOException {
         if (this.creatorRepository.findByUsername(data.username()) != null) {

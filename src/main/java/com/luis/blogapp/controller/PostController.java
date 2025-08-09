@@ -6,6 +6,7 @@ import com.luis.blogapp.domain.post.PostResponseDTO;
 import com.luis.blogapp.repository.CreatorRepository;
 import com.luis.blogapp.repository.PostRepository;
 import com.luis.blogapp.service.PostService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ public class PostController {
         this.creatorRepository = creatorRepository;
     }
 
+    @Operation(summary = "Cria uma post", description = "Cria um post com os seguintes parâmetros: imagem do post, título, conteúdo, id do criador e tipo de conteúdo")
     @PostMapping("/create-post")
     public ResponseEntity<?> createPost(@RequestParam("imagePost") MultipartFile imagePost,
                                         @RequestParam("title") String title,
@@ -54,6 +56,7 @@ public class PostController {
         }
     }
 
+    @Operation(summary = "Lista todos os posts", description = "Retorna uma lista de todos os posts")
     @GetMapping("/all-posts")
     public ResponseEntity<List<PostResponseDTO>> allPost() {
         List<PostResponseDTO> listPosts = this.postService.getAll();
@@ -65,6 +68,7 @@ public class PostController {
         return ResponseEntity.ok(listPosts);
     }
 
+    @Operation(summary = "Lista todos os posts de um criador", description = "Retorna uma lista de posts de um criador")
     @GetMapping("/all-posts-by-creator/{createdId}")
     public ResponseEntity<List<PostResponseDTO>> allPostByCreator(@PathVariable UUID createdId) {
         List<PostResponseDTO> listPosts = this.postService.allPostByCreator(createdId);
@@ -76,6 +80,7 @@ public class PostController {
         return ResponseEntity.ok(listPosts);
     }
 
+    @Operation(summary = "Lista um post pelo seu id", description = "Retorna um post buscado pelo seu id")
     @GetMapping("/all-post/{id}")
     public ResponseEntity<?> getPostById(@PathVariable(value = "id") UUID id){
         PostResponseDTO post = this.postService.getPostById(id);
@@ -85,6 +90,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
+    @Operation(summary = "Lista o último post feito", description = "Retorna o último post")
     @GetMapping("/last-post")
     public ResponseEntity<?> getLastPost() {
         Post lastPost = this.postRepository.findFirstByOrderByCreatedAtDesc();
@@ -96,6 +102,7 @@ public class PostController {
         return ResponseEntity.ok(new PostResponseDTO(lastPost));
     }
 
+    @Operation(summary = "Deleta um post pelo id", description = "Deleta um post pelo id")
     @DeleteMapping("/delete-post/{id}")
     public ResponseEntity<Object> deletePost(@PathVariable(value = "id") UUID id) {
         Optional<Post> post = this.postRepository.findById(id);
@@ -105,11 +112,5 @@ public class PostController {
         postRepository.delete(post.get());
         return ResponseEntity.status(HttpStatus.OK).body("Post deletado com sucesso!");
     }
-
-    @GetMapping("/arquivos")
-    public List<String> listarArquivos() {
-        return postService.listarArquivos();
-    }
-
 
 }
